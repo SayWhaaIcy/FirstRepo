@@ -1,6 +1,5 @@
 #include <iostream>
 #include <fstream>
-
 using namespace std;
 
 struct Student {
@@ -11,35 +10,66 @@ struct Student {
   double avg;
 };
 
+void findStudent(Student[]);
+
 int main()
 {
     ifstream ifs;
-	ofstream ofs;
-	
-	Student s;
-	ifs.open("students.txt");
-    ofs.open("students.bin" );
+    ofstream ofs;
 
-	for( int i=0;i<10; i++)
-	{
-		ifs >> s.id;
-		ifs >> s.sname;
-		ifs >> s.score[0];
-		ifs >> s.score[1];
-		s.sum = s.score[0] + s.score[1];
-		s.avg = s.sum / 2;
-	}
+    Student s[10];
+    ifs.open("students.txt");
+    ofs.open("student.bin");
 
-	for( int i=0;i<10; i++)
-	{
-		cout << s.id << "\t" ;
-		cout << s.sname << "\t";
-		cout << s.score[0] << " " << s.score[1] << "\t";
-		cout << s.sum << " " << s.avg << endl;
-	}
+// To read students.txt file
+    for (int i=0; i<10; i++)
+    {
+        ifs >> s[i].id;
+        ifs >> s[i].sname;
+        ifs >> s[i].score[0];
+        ifs >> s[i].score[1];
+        s[i].sum = s[i].score[0] + s[i].score[1];
+        s[i].avg = s[i].sum/2;
+    }
 
-	for( int i=0;i<10; i++)
-		ofs.write( (char *)&s, sizeof(s));
+// Writing values from "Student structure into binary file "students.bin"
+    for (int i=0; i<10; i++)
+    {
+        ofs.write( (char *)&s, sizeof(s));
+    }
 
+    findStudent(s);
 
+    cout << "To request another student's information please restart program. Goodbye." << endl;
 }
+
+// Finding indivdual Student ID
+    void findStudent(Student s[]){
+        int input;
+        bool found = 0;
+        do
+        {
+            cout << "Enter the 5 digit Student ID: " << endl;
+            cin >> input;
+            cout << endl;
+            
+            for (int i=0; i<10; i++)
+            {
+                if (input == s[i].id)
+                {
+                    cout << "Requested Student Information: \n";
+                    cout << "Student ID: " << s[i].id << "\n";
+                    cout << "Student Name: " << s[i].sname << "\n";
+                    cout << "Score 1: " << s[i].score[0] << "\n";
+                    cout << "Score 2: " << s[i].score[1] << "\n";
+                    cout << "Sum    : " << s[i].sum << "\n";
+                    cout << "Average: " << s[i].avg << endl << endl;
+                    found = 1;
+                }
+            }
+
+            if (found !=1)
+                cout << "You entered an invalid ID \n";
+            
+        } while (found !=1);
+    }
